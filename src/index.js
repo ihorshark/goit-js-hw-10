@@ -15,25 +15,36 @@ refs.input.addEventListener('input', debounce(onInputSubmit, DEBOUNCE_DELAY));
 
 function onInputSubmit(e) {
   e.preventDefault();
-  fetchCountries(e.target.value).then(data => {
-    if (data.length > 10) {
-      moreThanTenCountries();
-    } else if (data.length === 1) {
-      oneCountry(data[0]);
-    } else if (data.length > 1 || data.length <= 10) {
-      countriesMarkup(data);
-    }
-  });
+
+  if (e.target.value === '') {
+    clearForm();
+    return;
+  }
+
+  fetchCountries(e.target.value)
+    .then(data => {
+      if (data.length > 10) {
+        moreThanTenCountries();
+      } else if (data.length === 1) {
+        oneCountry(data[0]);
+      } else if (data.length > 1 || data.length <= 10) {
+        countriesMarkup(data);
+      }
+    })
+    .catch(() => {
+      clearForm();
+      Notify.failure('Oops, there is no country with that name');
+    });
 }
 
 function oneCountry({ flags, name, capital, population, languages }) {
   clearForm();
   const oneCountryMarkup = `
-    <h1><img src="${flags.svg}" width="60" />${name.official}</h1>
-    <ul>
-    <li>Capital: ${capital}</li>
-    <li>Population: ${population}</li>
-    <li>Languages: ${languages}</li>
+    <h1 class="header"><img src="${flags.svg}" width="60" />${name.official}</h1>
+    <ul class="list">
+    <li class="list__item"><b>Capital</b>: ${capital}</li>
+    <li class="list__item"><b>Population</b>: ${population.toLocaleString()}</li>
+    <li class="list__item"><b>Languages</b>: ${Object.values(languages)}</li>
     </ul>`;
 
   refs.countryInfo.innerHTML = oneCountryMarkup;
@@ -41,10 +52,11 @@ function oneCountry({ flags, name, capital, population, languages }) {
 
 function countriesMarkup(countries) {
   clearForm();
+
   countries.map(({ flags, name }) => {
     const multipleMarkup = `
-    <p><img src="${flags.svg}" width="60" />${name.official}</p>`;
-    refs.countryList.innerHTML = multipleMarkup;
+    <p class="country"><img src="${flags.svg}" width="60" />${name.official}</p>`;
+    refs.countryList.insertAdjacentHTML('beforeend', multipleMarkup);
   });
 }
 
