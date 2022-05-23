@@ -37,27 +37,14 @@ function onInputSubmit(e) {
     });
 }
 
-function oneCountry({ flags, name, capital, population, languages }) {
+function oneCountry(country) {
   clearForm();
-  const oneCountryMarkup = `
-    <h1 class="header"><img src="${flags.svg}" width="60" />${name.official}</h1>
-    <ul class="list">
-    <li class="list__item"><b>Capital</b>: ${capital}</li>
-    <li class="list__item"><b>Population</b>: ${population.toLocaleString()}</li>
-    <li class="list__item"><b>Languages</b>: ${Object.values(languages)}</li>
-    </ul>`;
-
-  refs.countryInfo.innerHTML = oneCountryMarkup;
+  makeCountryMarkup(country);
 }
 
 function countriesMarkup(countries) {
   clearForm();
-
-  countries.map(({ flags, name }) => {
-    const multipleMarkup = `
-    <p class="country"><img src="${flags.svg}" width="60" />${name.official}</p>`;
-    refs.countryList.insertAdjacentHTML('beforeend', multipleMarkup);
-  });
+  makeCountriesMarkup(countries);
 }
 
 function moreThanTenCountries() {
@@ -68,4 +55,24 @@ function moreThanTenCountries() {
 function clearForm() {
   refs.countryList.innerHTML = '';
   refs.countryInfo.innerHTML = '';
+}
+
+function makeCountryMarkup({ flags, name, capital, population, languages }) {
+  const oneCountryMarkup = `
+  <h1 class="header"><img src="${flags.svg}" width="60" />${name.official}</h1>
+  <ul class="list">
+  <li class="list__item"><b>Capital</b>: ${capital}</li>
+  <li class="list__item"><b>Population</b>: ${population.toLocaleString()}</li>
+  <li class="list__item"><b>Languages</b>: ${Object.values(languages)}</li>
+  </ul>`;
+
+  refs.countryInfo.innerHTML = oneCountryMarkup;
+}
+
+function makeCountriesMarkup(countries) {
+  countries.map(({ flags, name }) => {
+    const multipleMarkup = `
+    <p class="country"><img src="${flags.svg}" width="60" />${name.official}</p>`;
+    refs.countryList.insertAdjacentHTML('beforeend', multipleMarkup);
+  });
 }
